@@ -20,6 +20,10 @@ public class User {
 	@Column(name = "enabled")
 	private Boolean enabled;
 
+	@Column(name = "status")
+	@Enumerated(EnumType.STRING)
+	private UserStatus status;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
@@ -53,6 +57,14 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public UserStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(UserStatus status) {
+		this.status = status;
 	}
 
 	@JsonIgnore
