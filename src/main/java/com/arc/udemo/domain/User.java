@@ -3,8 +3,15 @@ package com.arc.udemo.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
+
+/**
+ * @author bolajisalau
+ * User is a simple pojo that describes the security identity of a Person
+ */
 
 @Entity
 @Table(name="users")
@@ -12,9 +19,12 @@ public class User {
 
 	@Id
 	@Column(name = "username")
+    @NotEmpty //(message = "Username must not be empty")
+    //@Size(min = 6, max = 16)
 	private String username;
 
 	@Column(name = "password")
+    @NotEmpty
 	private String password;
 
 	@Column(name = "enabled")
