@@ -8,6 +8,11 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
+/**
+ * @author bolajisalau
+ * Person is a simple pojo that describes the pernaonal information about an individual
+ */
+
 public class Person extends BaseEntity{
 
     @Column(name="username")

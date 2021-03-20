@@ -1,10 +1,11 @@
 package com.arc.udemo.domain;
 
+import com.arc.udemo.api.IUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,13 +16,13 @@ import java.util.Set;
 
 @Entity
 @Table(name="users")
-public class User {
+public class User implements IUser<User>, Serializable {
 
 	@Id
 	@Column(name = "username")
-    @NotEmpty //(message = "Username must not be empty")
+    @NotEmpty(message = "Username must not be empty")
     //@Size(min = 6, max = 16)
-	private String username;
+	private String email;
 
 	@Column(name = "password")
     @NotEmpty
@@ -37,12 +38,12 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
