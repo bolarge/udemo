@@ -1,11 +1,22 @@
 package com.arc.udemo.repository;
 
 import com.arc.udemo.domain.Person;
-import com.arc.udemo.repository.base.UserBaseRepository;
+import org.springframework.dao.DataAccessException;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
 
-public interface PersonRepository extends UserBaseRepository<Person> {
+public interface PersonRepository {
 
+    Collection<Person> findByLastName(String lastName) throws DataAccessException;
+
+    Person findById(long id) throws DataAccessException;
+
+
+    void save(Person owner) throws DataAccessException;
+
+
+    Collection<Person> findAll() throws DataAccessException;
+
+
+    void delete(Person owner) throws DataAccessException;
 }

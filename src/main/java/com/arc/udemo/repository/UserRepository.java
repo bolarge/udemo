@@ -1,14 +1,10 @@
 package com.arc.udemo.repository;
 
 import com.arc.udemo.api.IUser;
-import com.arc.udemo.domain.User;
-import com.arc.udemo.repository.base.UserBaseRepository;
+import org.springframework.dao.DataAccessException;
 
-import javax.transaction.Transactional;
+public interface UserRepository  {
 
-@Transactional
-public interface UserRepository extends UserBaseRepository<User> {
-
-	IUser save(IUser iUser);
+	IUser save(IUser iUser)throws DataAccessException;;
 
 }

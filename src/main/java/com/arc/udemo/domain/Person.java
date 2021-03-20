@@ -13,6 +13,8 @@ import java.util.Date;
  * Person is a simple pojo that describes the pernaonal information about an individual
  */
 
+@Entity
+@Table(name="person")
 public class Person extends BaseEntity{
 
     @Column(name="username")
