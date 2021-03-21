@@ -21,6 +21,7 @@ import java.util.Set;
 @Table(name="users")
 public class User extends BaseEntity implements Serializable {
 
+	@JsonIgnore
 	@Column(name = "title")
 	@Enumerated(EnumType.STRING)
 	private Title title;

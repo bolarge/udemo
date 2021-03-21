@@ -1,6 +1,8 @@
 package com.arc.udemo.rest;
 
+import com.arc.udemo.domain.MailMessage;
 import com.arc.udemo.domain.User;
+import com.arc.udemo.service.EmailService;
 import com.arc.udemo.service.UDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +25,9 @@ public class UserRestController {
     @Autowired
     private UDemoService uDemoService;
 
+    @Autowired
+    private EmailService emailService;
+
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Collection<User>> getUsers() {
         Collection<User> users = this.uDemoService.findAllUser();
@@ -40,6 +45,17 @@ public class UserRestController {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<User>(headers, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            //Send Application request confirmation
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("Application Request Confirmation");
+            mailMessage.setText("Your application is received  and will be processed");
+            emailService.sendEmail(mailMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         this.uDemoService.saveUser(user);
         headers.setLocation(ucBuilder.path("/api/users/{id}").buildAndExpand(user.getId()).toUri());
