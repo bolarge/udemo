@@ -6,11 +6,14 @@ import com.arc.udemo.service.UDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class UDemoServiceImpl implements UDemoService {
@@ -25,8 +28,8 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Override
     @Transactional(readOnly = true)
-    public User findUserById(long id) throws DataAccessException {
-        User person = null;
+    public Optional<User> findUserById(long id) throws DataAccessException {
+        Optional<User> person = null;
         try {
             person = userRepository.findById(id);
         } catch (ObjectRetrievalFailureException | EmptyResultDataAccessException e) {
@@ -36,9 +39,14 @@ public class UDemoServiceImpl implements UDemoService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Collection<User> findAllUser() throws DataAccessException {
-        return userRepository.findAll();
+        return null;
+    }
+
+    //@Override
+    @Transactional(readOnly = true)
+    public Page<User> findAll(Pageable pageable) throws DataAccessException {
+        return userRepository.findAll(pageable);
     }
 
     @Override

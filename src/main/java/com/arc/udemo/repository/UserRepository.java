@@ -1,24 +1,12 @@
 package com.arc.udemo.repository;
 
 import com.arc.udemo.domain.User;
-import org.springframework.dao.DataAccessException;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Collection;
 
-public interface UserRepository  {
-
-	Collection<User> findByLastName(String lastName) throws DataAccessException;
-
-	User findById(long id) throws DataAccessException;
-
-
-	void save(User user) throws DataAccessException;
-
-
-	Collection<User> findAll() throws DataAccessException;
-
-
-	void delete(User person) throws DataAccessException;
-
-
+@Profile("spring-data-jpa")
+public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+	Collection<User> findByLastName(String lastName);
 }
