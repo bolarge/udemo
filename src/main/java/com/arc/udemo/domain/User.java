@@ -21,7 +21,7 @@ import java.util.Set;
 @Table(name="users")
 public class User extends BaseEntity implements Serializable {
 
-	@JsonIgnore
+
 	@Column(name = "title")
 	@Enumerated(EnumType.STRING)
 	private Title title;
@@ -31,22 +31,22 @@ public class User extends BaseEntity implements Serializable {
 	private String email;
 
 	@Column(name = "password")
-    @NotEmpty
+    //@NotEmpty
 	private String password;
 
 	@Column(name = "enabled")
-	private Boolean enabled;
+	private Boolean enabled = false;
 
 	@Column(name="first_name")
-	@NotEmpty
+	//@NotEmpty
 	private String firstName;
 
 	@Column(name="last_name")
-	@NotEmpty
+	//@NotEmpty
 	private String lastName;
 
 	@Column(name = "mobile_phone")
-	@NotEmpty
+	//@NotEmpty
 	@Digits(fraction = 0, integer = 11)
 	private String mobilePhone;
 

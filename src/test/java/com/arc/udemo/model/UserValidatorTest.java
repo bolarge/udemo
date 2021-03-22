@@ -30,21 +30,11 @@ public class UserValidatorTest {
         Validator validator = createValidator();
         Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
 
-        assertThat(constraintViolations.size()).isEqualTo(2);
+        assertThat(constraintViolations.size()).isEqualTo(1);
         ConstraintViolation<User> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath().toString()).isEqualTo("username");
-        assertThat(violation.getMessage()).isEqualTo("must not be empty");
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
+        assertThat(violation.getMessage()).isEqualTo("email must not be empty");
 
-
-        /*for(ConstraintViolation<User> violation : constraintViolations) {
-            //ConstraintViolation<User> violation = constraintViolations.iterator().next();
-            assertThat(violation.getPropertyPath().toString()).isEqualTo("username");
-            assertThat(violation.getMessage()).isEqualTo("must not be empty");
-
-            assertThat(violation.getPropertyPath().toString()).isEqualTo("password");
-            assertThat(violation.getMessage()).isEqualTo("must not be empty");
-            System.out.println(violation.getMessage());
-        }*/
     }
 
 }

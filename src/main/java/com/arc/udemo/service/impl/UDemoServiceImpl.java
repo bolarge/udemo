@@ -3,6 +3,8 @@ package com.arc.udemo.service.impl;
 import com.arc.udemo.domain.User;
 import com.arc.udemo.repository.UserRepository;
 import com.arc.udemo.service.UDemoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,7 +30,7 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<User> findUserById(long id) throws DataAccessException {
+    public Optional<User> findUserById(int id) throws DataAccessException {
         Optional<User> person = null;
         try {
             person = userRepository.findById(id);
@@ -43,7 +45,6 @@ public class UDemoServiceImpl implements UDemoService {
         return null;
     }
 
-    //@Override
     @Transactional(readOnly = true)
     public Page<User> findAll(Pageable pageable) throws DataAccessException {
         return userRepository.findAll(pageable);
@@ -65,5 +66,11 @@ public class UDemoServiceImpl implements UDemoService {
     @Transactional(readOnly = true)
     public Collection<User> findUserByLastName(String lastName) throws DataAccessException {
         return userRepository.findByLastName(lastName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findUserByEmail(String email) throws DataAccessException {
+        return userRepository.findUserByEmail(email);
     }
 }

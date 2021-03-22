@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Collection;
 
 @Profile("spring-data-jpa")
-public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
 	Collection<User> findByLastName(String lastName);
+	User findUserByEmail(String email);
 }
