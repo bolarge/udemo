@@ -37,6 +37,12 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
 spring.jpa.hibernate.ddl-auto=none
 ```      
 
+If using container to run udemo, you can start a mysql container as stated below:
+
+```
+docker run --name mysql-udemo -e MYSQL_ROOT_PASSWORD=udemo -e MYSQL_DATABASE=udemo -p 3306:3306 mysql:8.0.23
+```
+
 ### prerequisites
 The following items should be installed in your system:
 * JDK 11
