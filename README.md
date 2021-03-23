@@ -17,7 +17,7 @@ docker run -p 9966:9966 bolarge/udemo
 
 ## Database configuration
 
-uDemo run on MySQL
+uDemo runs on both MySQL and RabbitMQ
 To run locally using persistent database, it is needed to set profile defined in application.properties file.
 
 ```
@@ -41,6 +41,14 @@ If using container to run udemo, you can start a mysql container as stated below
 
 ```
 docker run --name mysql-udemo -e MYSQL_ROOT_PASSWORD=udemo -e MYSQL_DATABASE=udemo -p 3306:3306 mysql:8.0.23
+```
+
+Ensure you have a local running instance of RabbitMQ
+
+for RabbitMQ, you can start a container as follows:
+
+```
+$ docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3.8.7
 ```
 
 ### prerequisites
