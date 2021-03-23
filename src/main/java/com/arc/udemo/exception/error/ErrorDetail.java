@@ -1,4 +1,4 @@
-package com.arc.udemo.rest.error;
+package com.arc.udemo.exception.error;
 
 import java.util.HashMap;
 import java.util.List;

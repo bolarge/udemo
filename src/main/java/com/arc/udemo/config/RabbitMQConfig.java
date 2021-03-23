@@ -1,6 +1,6 @@
 package com.arc.udemo.config;
 
-import com.arc.udemo.service.MailMessageListenerAdapter;
+import com.arc.udemo.messaging.MailMessageListenerAdapter;
 import com.rabbitmq.client.ConnectionFactory;
 
 import org.apache.commons.lang3.StringUtils;

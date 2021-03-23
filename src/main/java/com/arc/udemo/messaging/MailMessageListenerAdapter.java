@@ -1,4 +1,4 @@
-package com.arc.udemo.service;
+package com.arc.udemo.messaging;
 
 import com.arc.udemo.domain.MailMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;

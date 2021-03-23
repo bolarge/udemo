@@ -52,14 +52,14 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Override
     @Transactional
-    public void saveUser(User person) throws DataAccessException {
-        userRepository.save(person);
+    public User saveUser(User person) throws DataAccessException {
+        return userRepository.save(person);
     }
 
     @Override
     @Transactional
-    public void deleteUser(User person) throws DataAccessException {
-        userRepository.delete(person);
+    public void deleteUser(Integer userId) throws DataAccessException {
+        userRepository.deleteById(userId);
     }
 
     @Override

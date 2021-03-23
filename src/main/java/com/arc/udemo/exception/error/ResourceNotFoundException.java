@@ -1,4 +1,4 @@
-package com.arc.udemo.rest.error;
+package com.arc.udemo.exception.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

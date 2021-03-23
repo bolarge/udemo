@@ -13,8 +13,8 @@ public interface UDemoService {
     Optional<User> findUserById(int id) throws DataAccessException;
     Collection<User> findAllUser() throws DataAccessException;
     Page<User> findAll(Pageable pageable) throws DataAccessException;
-    void saveUser(User user) throws DataAccessException;
-    void deleteUser(User user) throws DataAccessException;
+    User saveUser(User user) throws DataAccessException;
+    void deleteUser(Integer userId) throws DataAccessException;
     Collection<User> findUserByLastName(String lastName) throws DataAccessException;
     User findUserByEmail(String email) throws DataAccessException;
 
