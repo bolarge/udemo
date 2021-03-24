@@ -94,8 +94,21 @@ public class UserRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class),
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
     public ResponseEntity<?> deleteUser(@PathVariable Integer userId) {
+
         verifyUser(userId);
-        this.uDemoService.deleteUser(userId);
+        Optional<User> userToBeDeleted = this.uDemoService.findUserById(userId);
+        userToBeDeleted.get().setEnabled(false);
+        this.uDemoService.saveUser(userToBeDeleted.get());
+
+        MailMessage message = new MailMessage();
+        message.setTo(userToBeDeleted.get().getEmail());
+        message.setSubject("User Account Deactivation");
+        message.setText("<html><head></head><body><h3>Dear "+ userToBeDeleted.get().getFirstName()+"</h3><br><p> Your account has been deleted successfully</a>.</p></body></html>");
+        try {
+            emailService.sendEmail(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
