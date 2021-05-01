@@ -1,10 +1,13 @@
 package com.arc.udemo.service.impl;
 
-import com.arc.udemo.domain.User;
+import com.arc.udemo.domain.billing.Fee;
+import com.arc.udemo.domain.billing.UsagePlan;
+import com.arc.udemo.domain.users.User;
+import com.arc.udemo.repository.FeeRepository;
+import com.arc.udemo.repository.UsagePlanRepository;
 import com.arc.udemo.repository.UserRepository;
+import com.arc.udemo.rest.dto.UsagePlanDTO;
 import com.arc.udemo.service.UDemoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,24 +23,30 @@ import java.util.Optional;
 @Service
 public class UDemoServiceImpl implements UDemoService {
 
-    @Autowired
     private UserRepository userRepository;
+    //private BillRepository billRepository;
+    private FeeRepository feeRepository;
+    private UsagePlanRepository usagePlanRepository;
+
 
     @Autowired
-    public UDemoServiceImpl(UserRepository userRepository){
+    public UDemoServiceImpl(UserRepository userRepository, FeeRepository feeRepository,
+                            UsagePlanRepository usagePlanRepository){
         this.userRepository = userRepository;
+        this.feeRepository = feeRepository;
+        this.usagePlanRepository = usagePlanRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<User> findUserById(int id) throws DataAccessException {
-        Optional<User> person = null;
+    public Optional<User> findUserById(Integer id) throws DataAccessException {
+        Optional<User> user;
         try {
-            person = userRepository.findById(id);
+            user = userRepository.findById(id);
         } catch (ObjectRetrievalFailureException | EmptyResultDataAccessException e) {
             return null;
         }
-        return person;
+        return user;
     }
 
     @Override
@@ -57,20 +66,30 @@ public class UDemoServiceImpl implements UDemoService {
     }
 
     @Override
-    @Transactional
-    public void deleteUser(Integer userId) throws DataAccessException {
-        userRepository.deleteById(userId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Collection<User> findUserByLastName(String lastName) throws DataAccessException {
-        return userRepository.findByLastName(lastName);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public User findUserByEmail(String email) throws DataAccessException {
         return userRepository.findUserByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public Fee saveFee(Fee fee) throws DataAccessException {
+        return feeRepository.save(fee);
+    }
+
+ /*   @Override
+    @Transactional
+    public Bill saveBill(Bill bill) throws DataAccessException {
+        return billRepository.save(bill);
+    }*/
+
+    @Override
+    @Transactional
+    public UsagePlan saveUsagePlan(UsagePlanDTO usagePlanDTO) throws DataAccessException {
+        Optional<Fee> fee = feeRepository.findById(Integer.parseInt(usagePlanDTO.getFee()));
+        UsagePlan usagePlan = new UsagePlan(usagePlanDTO.getName(), usagePlanDTO.getDescription(),
+                Double.parseDouble(usagePlanDTO.getPrice()), fee.get());
+
+        return usagePlanRepository.save(usagePlan);
     }
 }

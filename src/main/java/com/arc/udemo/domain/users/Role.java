@@ -1,5 +1,6 @@
-package com.arc.udemo.domain;
+package com.arc.udemo.domain.users;
 
+import com.arc.udemo.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

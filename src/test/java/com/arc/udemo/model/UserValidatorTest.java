@@ -1,6 +1,6 @@
 package com.arc.udemo.model;
 
-import com.arc.udemo.domain.User;
+import com.arc.udemo.domain.users.User;
 import org.junit.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;

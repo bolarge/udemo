@@ -1,9 +1,9 @@
 package com.arc.udemo.repository;
 
-import com.arc.udemo.domain.users.Role;
+import com.arc.udemo.domain.billing.UsagePlan;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.repository.CrudRepository;
 
 @Profile("spring-data-jpa")
-public interface RoleRepository extends CrudRepository<Role, Integer> {
+public interface UsagePlanRepository extends CrudRepository<UsagePlan, Integer> {
 }

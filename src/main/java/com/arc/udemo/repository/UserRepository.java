@@ -1,6 +1,6 @@
 package com.arc.udemo.repository;
 
-import com.arc.udemo.domain.User;
+import com.arc.udemo.domain.users.User;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

@@ -14,7 +14,7 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Integer id;
+    protected Integer id;
 
     public Integer getId() {
         return id;

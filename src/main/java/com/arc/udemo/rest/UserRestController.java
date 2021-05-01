@@ -1,10 +1,12 @@
 package com.arc.udemo.rest;
 
 import com.arc.udemo.domain.MailMessage;
-import com.arc.udemo.domain.User;
-import com.arc.udemo.domain.UserStatus;
+import com.arc.udemo.domain.events.APICallEvent;
+import com.arc.udemo.domain.users.User;
+import com.arc.udemo.domain.users.UserStatus;
 import com.arc.udemo.exception.ResourceNotFoundException;
 import com.arc.udemo.service.EmailService;
+import com.arc.udemo.service.EventService;
 import com.arc.udemo.service.UDemoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,13 +25,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.arc.udemo.exception.error.ErrorDetail;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("api")
+@RequestMapping("/api/")
 @Api(value = "users", tags = "User API")
 public class UserRestController {
 
@@ -41,12 +45,19 @@ public class UserRestController {
     @Autowired
     private EmailService emailService;
 
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    @Autowired
+    private EventService eventService;
+
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ApiOperation(value = "Retrieves given user", response = User.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = User.class),
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
-    public ResponseEntity<?> getUser(@PathVariable Integer userId) {
-        Optional<User> user = this.uDemoService.findUserById(userId);
+    public ResponseEntity<?> getUser(@PathVariable Integer userId, HttpServletRequest httpServletRequest) {
+        //generate an event
+        APICallEvent apiCallEvent = new APICallEvent("bolajisalau@gmail.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDateTime.now());
+        eventService.processEvent(apiCallEvent);
+
+        Optional<User> user =  this.uDemoService.findUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -57,7 +68,7 @@ public class UserRestController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/users", method = RequestMethod.POST, produces = "application/json")
     @ApiOperation(value = "Creates a new User Request", notes = "The newly created user Id will be sent in the location response header", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 201, message = "User Application Successful", response = Void.class), @ApiResponse(code = 500, message = "Error creating User", response = ErrorDetail.class)})
     public ResponseEntity<?> createUser(@RequestBody @Valid User user) {
@@ -79,7 +90,7 @@ public class UserRestController {
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
     @ApiOperation(value = "Updates given user", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class),
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
@@ -89,7 +100,7 @@ public class UserRestController {
         return new ResponseEntity<>(updateUser, HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE, produces = "application/json")
     @ApiOperation(value = "Deletes given user", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class),
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})

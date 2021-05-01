@@ -1,5 +1,7 @@
-package com.arc.udemo.domain;
+package com.arc.udemo.domain.users;
 
+import com.arc.udemo.domain.BaseEntity;
+import com.arc.udemo.domain.billing.UsagePlan;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +23,6 @@ import java.util.Set;
 @Table(name="users")
 public class User extends BaseEntity implements Serializable {
 
-
 	@Column(name = "title")
 	@Enumerated(EnumType.STRING)
 	private Title title;
@@ -31,22 +32,18 @@ public class User extends BaseEntity implements Serializable {
 	private String email;
 
 	@Column(name = "password")
-    //@NotEmpty
 	private String password;
 
 	@Column(name = "enabled")
 	private Boolean enabled = false;
 
 	@Column(name="first_name")
-	//@NotEmpty
 	private String firstName;
 
 	@Column(name="last_name")
-	//@NotEmpty
 	private String lastName;
 
 	@Column(name = "mobile_phone")
-	//@NotEmpty
 	@Digits(fraction = 0, integer = 11)
 	private String mobilePhone;
 
@@ -78,7 +75,9 @@ public class User extends BaseEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
-	//Constructor
+	@OneToOne
+	private UsagePlan subscriptionPlan;
+
 	public User() {}
 
 	public Title getTitle() {
