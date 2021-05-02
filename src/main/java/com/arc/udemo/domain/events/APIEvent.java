@@ -4,34 +4,35 @@ import com.arc.udemo.domain.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity(name = "APICallEvent")
-@Table(name = "api_calls")
-public class APICallEvent extends BaseEntity implements Serializable {
+@Table(name = "usage")
+public class APIEvent extends BaseEntity  {
 
     private String userEmail;
     private String ipAddress;
     private String domainName;
     private String location;
     private LocalDateTime requestTime;
+    private LocalDate requestDate;
 
-    public APICallEvent(){}
+    public APIEvent(){}
 
-    public APICallEvent(String ipAddress, String domainName, String location, LocalDateTime requestTime) {
+    public APIEvent(String ipAddress, String domainName, String location, LocalDateTime requestTime) {
         this.ipAddress = ipAddress;
         this.domainName = domainName;
         this.location = location;
         this.requestTime = requestTime;
     }
 
-    public APICallEvent(String userEmail, String ipAddress, String domainName, String location, LocalDateTime requestTime) {
+    public APIEvent(String userEmail, String ipAddress, String domainName, String location, LocalDate requestDate) {
         this.userEmail = userEmail;
         this.ipAddress = ipAddress;
         this.domainName = domainName;
         this.location = location;
-        this.requestTime = requestTime;
+        this.requestDate = requestDate;
     }
 
     public String getIpAddress() {
@@ -66,13 +67,29 @@ public class APICallEvent extends BaseEntity implements Serializable {
         this.requestTime = requestTime;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public LocalDate getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
+    }
+
     @Override
     public String toString() {
         return "APICallEvent{" +
                 "ipAddress='" + ipAddress + '\'' +
                 ", domainName='" + domainName + '\'' +
                 ", location='" + location + '\'' +
-                ", requestTime=" + requestTime +
+                ", requestDate=" + requestDate +
                 '}';
     }
 }

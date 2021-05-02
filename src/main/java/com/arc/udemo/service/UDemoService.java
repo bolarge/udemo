@@ -1,9 +1,12 @@
 package com.arc.udemo.service;
 
+import com.arc.udemo.domain.billing.Bill;
 import com.arc.udemo.domain.billing.Fee;
 import com.arc.udemo.domain.billing.UsagePlan;
 import com.arc.udemo.domain.users.User;
-import com.arc.udemo.rest.dto.UsagePlanDTO;
+import com.arc.udemo.rest.dto.MonthlyBillRequest;
+import com.arc.udemo.rest.dto.UsagePlanRequest;
+import com.arc.udemo.rest.dto.UsageSubscriptionRequest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +23,7 @@ public interface UDemoService {
     User findUserByEmail(String email) throws DataAccessException;
 
     Fee saveFee(Fee fee) throws DataAccessException;
-    //Bill saveBill(Bill bill) throws DataAccessException;
-    UsagePlan saveUsagePlan(UsagePlanDTO usagePlanDTO) throws DataAccessException;
-
+    UsagePlan saveUsagePlan(UsagePlanRequest usagePlanRequest) throws DataAccessException;
+    User subscribeUserToPlan(UsageSubscriptionRequest subscriptionRequestDTO);
+    Bill generateUserMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException;
 }

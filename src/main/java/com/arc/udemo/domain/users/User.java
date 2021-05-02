@@ -76,7 +76,7 @@ public class User extends BaseEntity implements Serializable {
 	private Set<Role> roles;
 
 	@OneToOne
-	private UsagePlan subscriptionPlan;
+	private UsagePlan usagePlan;
 
 	public User() {}
 
@@ -182,6 +182,14 @@ public class User extends BaseEntity implements Serializable {
 
 	public void setVerified(boolean verified) {
 		this.verified = verified;
+	}
+
+	public UsagePlan getUsagePlan() {
+		return usagePlan;
+	}
+
+	public void setUsagePlan(UsagePlan usagePlan) {
+		this.usagePlan = usagePlan;
 	}
 
 	@JsonIgnore

@@ -1,6 +1,6 @@
 package com.arc.udemo.service.impl;
 
-import com.arc.udemo.domain.events.APICallEvent;
+import com.arc.udemo.domain.events.APIEvent;
 import com.arc.udemo.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -14,8 +14,8 @@ public class EventServiceImpl implements EventService, ApplicationEventPublisher
     private ApplicationEventPublisher publisher;
 
     @Override
-    public void processEvent(APICallEvent apiCallEvent) {
-        publisher.publishEvent(apiCallEvent);
+    public void processEvent(APIEvent apiEvent) {
+        publisher.publishEvent(apiEvent);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.arc.udemo.rest;
 
-import com.arc.udemo.domain.billing.UsagePlan;
-import com.arc.udemo.rest.dto.UsagePlanRequest;
+import com.arc.udemo.domain.billing.Bill;
+import com.arc.udemo.rest.dto.MonthlyBillRequest;
 import com.arc.udemo.service.UDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,17 +17,18 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/")
-public class UsagePlanRestController {
+public class BillRestController {
 
     @Autowired
     private UDemoService uDemoService;
 
-    @RequestMapping(value = "/plans", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<?> createUsagePlan(@RequestBody UsagePlanRequest usagePlan){
-        UsagePlan newPlan = this.uDemoService.saveUsagePlan(usagePlan);
+    @RequestMapping(value = "/bills", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<?> generateMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest){
+        Bill monthlyBill = this.uDemoService.generateUserMonthlyBill(monthlyBillRequest);
+
         HttpHeaders responseHeaders = new HttpHeaders();
-        URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newPlan.getId()).toUri();
+        URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(monthlyBill.getId()).toUri();
         responseHeaders.setLocation(newPollUri);
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+        return new ResponseEntity<>(monthlyBill, responseHeaders, HttpStatus.CREATED);
     }
 }

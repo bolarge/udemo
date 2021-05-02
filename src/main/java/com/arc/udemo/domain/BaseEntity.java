@@ -7,9 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 @MappedSuperclass
-public class BaseEntity {
+public class BaseEntity implements Serializable {
     //@JsonIgnore
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator="native")

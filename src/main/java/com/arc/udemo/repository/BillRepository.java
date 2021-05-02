@@ -1,4 +1,3 @@
-/*
 package com.arc.udemo.repository;
 
 import com.arc.udemo.domain.billing.Bill;
@@ -9,4 +8,3 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface BillRepository extends PagingAndSortingRepository<Bill, Integer> {
 
 }
-*/

@@ -1,4 +1,3 @@
-/*
 package com.arc.udemo.domain.billing;
 
 import com.arc.udemo.domain.NamedEntity;
@@ -12,11 +11,11 @@ import javax.persistence.Table;
 @Table(name = "bills")
 public class Bill extends NamedEntity {
 
-    //@OneToOne
+    @OneToOne
     private User user;
 
-    //@OneToOne
-    private SubscriptionPlan subscriptionPlan;
+    @OneToOne
+    private UsagePlan usagePlan;
     private double subTotal;
     private double tax;
     private double total;
@@ -30,7 +29,6 @@ public class Bill extends NamedEntity {
     public void setUser(User user) {
         this.user = user;
     }
-
 
     public double getSubTotal() {
         return subTotal;
@@ -56,5 +54,24 @@ public class Bill extends NamedEntity {
         this.total = total;
     }
 
+    public UsagePlan getUsagePlan() {
+        return usagePlan;
+    }
+
+    public void setUsagePlan(UsagePlan usagePlan) {
+        this.usagePlan = usagePlan;
+    }
+
+    @Override
+    public String toString() {
+        return "Bill{" +
+                "user=" + user +
+                ", usagePlan=" + usagePlan +
+                ", subTotal=" + subTotal +
+                ", tax=" + tax +
+                ", total=" + total +
+                ", name='" + name + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }
-*/

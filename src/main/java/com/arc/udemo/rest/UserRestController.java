@@ -1,10 +1,11 @@
 package com.arc.udemo.rest;
 
 import com.arc.udemo.domain.MailMessage;
-import com.arc.udemo.domain.events.APICallEvent;
+import com.arc.udemo.domain.events.APIEvent;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.domain.users.UserStatus;
 import com.arc.udemo.exception.ResourceNotFoundException;
+import com.arc.udemo.rest.dto.UsageSubscriptionRequest;
 import com.arc.udemo.service.EmailService;
 import com.arc.udemo.service.EventService;
 import com.arc.udemo.service.UDemoService;
@@ -28,7 +29,7 @@ import com.arc.udemo.exception.error.ErrorDetail;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -54,8 +55,8 @@ public class UserRestController {
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
     public ResponseEntity<?> getUser(@PathVariable Integer userId, HttpServletRequest httpServletRequest) {
         //generate an event
-        APICallEvent apiCallEvent = new APICallEvent("bolajisalau@gmail.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDateTime.now());
-        eventService.processEvent(apiCallEvent);
+        APIEvent apiEvent = new APIEvent("bolajisalau@gmail.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDate.now());
+        eventService.processEvent(apiEvent);
 
         Optional<User> user =  this.uDemoService.findUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -128,7 +129,6 @@ public class UserRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class), @ApiResponse(code = 404, message = "Unable to verify user", response = ErrorDetail.class)})
     public ResponseEntity<?> verifyUser(@PathVariable("email") String email) throws Exception {
 
-        //verifyUser(userId);
         User verifiedUser = this.uDemoService.findUserByEmail(email);
         if(verifiedUser == null)
             throw new ResourceNotFoundException("User with id " + email + " not found");
@@ -151,6 +151,12 @@ public class UserRestController {
         if (user == null) {
             throw new ResourceNotFoundException("User with id " + userId + " not found");
         }
+    }
+
+    @RequestMapping(value = "/users/plans", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<?> subscribeUserToUsagePlan(@RequestBody UsageSubscriptionRequest subscriptionRequestDTO){
+        User user = this.uDemoService.subscribeUserToPlan(subscriptionRequestDTO);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
 }

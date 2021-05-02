@@ -1,13 +1,13 @@
 package com.arc.udemo.rest.dto;
 
-public class UsagePlanDTO {
+public class UsagePlanRequest {
 
     private String name;
     private String description;
     private String price;
     private String fee;
 
-    private UsagePlanDTO(){}
+    private UsagePlanRequest(){}
 
     public String getName() {
         return name;
