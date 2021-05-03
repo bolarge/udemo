@@ -35,7 +35,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
 @RequestMapping("/api/")
-@Api(value = "users", tags = "User API")
+@Api(value = "users", tags = "Users API")
 public class UserRestController {
 
     private static Logger logger = LoggerFactory.getLogger(UserRestController.class);
@@ -54,10 +54,10 @@ public class UserRestController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = User.class),
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
     public ResponseEntity<?> getUser(@PathVariable Integer userId, HttpServletRequest httpServletRequest) {
+        logger.info("capturing api call event ..................... ");
         //generate an event
         APIUsage apiUsage = new APIUsage("joe@mailinator.com.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDate.now());
         eventService.processEvent(apiUsage);
-
         Optional<User> user =  this.uDemoService.findUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -104,7 +104,7 @@ public class UserRestController {
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE, produces = "application/json")
     @ApiOperation(value = "Deletes given user", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class),
-            @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
+            @ApiResponse(code = 404, message = "Unable to delete user", response = ErrorDetail.class)})
     public ResponseEntity<?> deleteUser(@PathVariable Integer userId) {
 
         verifyUser(userId);

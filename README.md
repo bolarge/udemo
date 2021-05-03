@@ -51,7 +51,6 @@ If using container, you can start a rabbitmq container as follows:
 ```
 $ docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3.8.7
 ```
-
 ### Installation
 ### Prerequisites
 The following items should be installed in your system:
@@ -73,3 +72,8 @@ The following items should be installed in your system:
 * Grafana
 * Docker
 * Stackify
+
+## Swagger Documentation
+You can run through the deployed application by using the swagger documentation at the link below
+* http://{domain-name:port}/swagger-ui.html#/
+
