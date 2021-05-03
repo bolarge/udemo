@@ -1,6 +1,6 @@
 package com.arc.udemo.messaging;
 
-import com.arc.udemo.domain.events.APIEvent;
+import com.arc.udemo.domain.products.APIUsage;
 import com.arc.udemo.repository.APIUsageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -8,19 +8,18 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class APIEventListener {
+public class APIUsageListener {
 
     private APIUsageRepository apiCallEventRepository;
 
     @Autowired
-    public APIEventListener(APIUsageRepository apiCallEventRepository) {
+    public APIUsageListener(APIUsageRepository apiCallEventRepository) {
         this.apiCallEventRepository = apiCallEventRepository;
     }
 
     @Async
     @EventListener
-    public void processAPICallEvent(APIEvent apiEvent){
-        System.out.println("API Calls getting pushed:  " + apiEvent.toString());
-        apiCallEventRepository.save(apiEvent);
+    protected void processAPICallEvent(APIUsage apiUsage){
+        apiCallEventRepository.save(apiUsage);
     }
 }

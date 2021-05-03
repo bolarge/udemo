@@ -1,7 +1,7 @@
 package com.arc.udemo.service;
 
-import com.arc.udemo.domain.events.APIEvent;
+import com.arc.udemo.domain.products.APIUsage;
 
 public interface EventService {
-    public void processEvent(APIEvent apiEvent);
+    public void processEvent(APIUsage apiUsage);
 }

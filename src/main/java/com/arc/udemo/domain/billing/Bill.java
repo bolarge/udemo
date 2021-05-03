@@ -15,7 +15,7 @@ public class Bill extends NamedEntity {
     private User user;
 
     @OneToOne
-    private UsagePlan usagePlan;
+    private Band band;
     private double subTotal;
     private double tax;
     private double total;
@@ -54,19 +54,19 @@ public class Bill extends NamedEntity {
         this.total = total;
     }
 
-    public UsagePlan getUsagePlan() {
-        return usagePlan;
+    public Band getBand() {
+        return band;
     }
 
-    public void setUsagePlan(UsagePlan usagePlan) {
-        this.usagePlan = usagePlan;
+    public void setBand(Band band) {
+        this.band = band;
     }
 
     @Override
     public String toString() {
         return "Bill{" +
                 "user=" + user +
-                ", usagePlan=" + usagePlan +
+                ", usagePlan=" + band +
                 ", subTotal=" + subTotal +
                 ", tax=" + tax +
                 ", total=" + total +

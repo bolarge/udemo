@@ -1,9 +1,10 @@
 package com.arc.udemo.domain.users;
 
 import com.arc.udemo.domain.BaseEntity;
-import com.arc.udemo.domain.billing.UsagePlan;
+import com.arc.udemo.domain.billing.Band;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ import java.util.Set;
  * @author bolajisalau
  * User is a simple pojo that describes the security identity  and personal information about an individual
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="users")
 public class User extends BaseEntity implements Serializable {
@@ -76,7 +77,7 @@ public class User extends BaseEntity implements Serializable {
 	private Set<Role> roles;
 
 	@OneToOne
-	private UsagePlan usagePlan;
+	private Band band;
 
 	public User() {}
 
@@ -184,12 +185,12 @@ public class User extends BaseEntity implements Serializable {
 		this.verified = verified;
 	}
 
-	public UsagePlan getUsagePlan() {
-		return usagePlan;
+	public Band getBand() {
+		return band;
 	}
 
-	public void setUsagePlan(UsagePlan usagePlan) {
-		this.usagePlan = usagePlan;
+	public void setBand(Band band) {
+		this.band = band;
 	}
 
 	@JsonIgnore

@@ -1,4 +1,4 @@
-package com.arc.udemo.domain.events;
+package com.arc.udemo.domain.products;
 
 import com.arc.udemo.domain.BaseEntity;
 
@@ -7,9 +7,9 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity(name = "APICallEvent")
+@Entity(name = "APIEvent")
 @Table(name = "usage")
-public class APIEvent extends BaseEntity  {
+public class APIUsage extends BaseEntity  {
 
     private String userEmail;
     private String ipAddress;
@@ -18,16 +18,9 @@ public class APIEvent extends BaseEntity  {
     private LocalDateTime requestTime;
     private LocalDate requestDate;
 
-    public APIEvent(){}
+    public APIUsage(){}
 
-    public APIEvent(String ipAddress, String domainName, String location, LocalDateTime requestTime) {
-        this.ipAddress = ipAddress;
-        this.domainName = domainName;
-        this.location = location;
-        this.requestTime = requestTime;
-    }
-
-    public APIEvent(String userEmail, String ipAddress, String domainName, String location, LocalDate requestDate) {
+    public APIUsage(String userEmail, String ipAddress, String domainName, String location, LocalDate requestDate) {
         this.userEmail = userEmail;
         this.ipAddress = ipAddress;
         this.domainName = domainName;

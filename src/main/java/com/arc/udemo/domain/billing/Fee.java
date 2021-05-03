@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Fees")
+@Table(name = "fees")
 public class Fee extends NamedEntity {
 
     private int floor;

@@ -1,7 +1,7 @@
 package com.arc.udemo.rest;
 
 import com.arc.udemo.domain.MailMessage;
-import com.arc.udemo.domain.events.APIEvent;
+import com.arc.udemo.domain.products.APIUsage;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.domain.users.UserStatus;
 import com.arc.udemo.exception.ResourceNotFoundException;
@@ -55,8 +55,8 @@ public class UserRestController {
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
     public ResponseEntity<?> getUser(@PathVariable Integer userId, HttpServletRequest httpServletRequest) {
         //generate an event
-        APIEvent apiEvent = new APIEvent("bolajisalau@gmail.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDate.now());
-        eventService.processEvent(apiEvent);
+        APIUsage apiUsage = new APIUsage("joe@mailinator.com.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDate.now());
+        eventService.processEvent(apiUsage);
 
         Optional<User> user =  this.uDemoService.findUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);

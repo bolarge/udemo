@@ -7,22 +7,22 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "usage_plans")
-public class UsagePlan extends NamedEntity {
+@Table(name = "bands")
+public class Band extends NamedEntity {
 
     @OneToOne
     private Fee fee;
     private double price;
 
-    public UsagePlan() {
+    public Band() {
     }
 
-    public UsagePlan(String name, Fee fee) {
+    public Band(String name, Fee fee) {
         super(name);
         this.fee = fee;
     }
 
-    public UsagePlan(String name, String description, double price, Fee fee) {
+    public Band(String name, String description, double price, Fee fee) {
         super(name, description);
         this.price = price;
         this.fee = fee;

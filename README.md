@@ -1,8 +1,8 @@
-## uDemo is a user management demo app.
+## uDemo API Billing Service.
 
-### This document describes uDemo REST API service by tech stack stack and some features
+#### This document describes uDemo API Billing service, which a demo of how API services used by customers can be tracked and logged for the purpose of monitizing such API services. The service tracks API usage by gennerating usgae events whenever API calls are made, this events are then propagated and handled by other componnents such as event listener to store the call event. The service use the captured information to prepare comsumption history and a bill. 
 
-## Tech Stack: Java 11, SpringBoot 2.2, Spring Data, Spring REST, Swagger 2, RabbitMQ, JavaMail, MySQL8, Tomcat 9, Promethius, Docker, Stackify
+### Installation
 
 To run locally, With maven command line
 ```
@@ -17,42 +17,65 @@ docker run -p 9966:9966 bolarge/udemo
 
 ## Database configuration
 
-uDemo runs on both MySQL and RabbitMQ
+uDemo runs on PostgreSQL 
 To run locally using persistent database, it is needed to set profile defined in application.properties file.
 
 ```
-spring.profiles.active=mysql,spring-data-jpa
+spring.profiles.active=postgresql,spring-data-jpa
 ```
  defined in application.properties file.
 
-Before doing this, would be good to check properties defined in application-mysql.properties file.
+Before doing this, would be good to check properties defined in application-postgresql.properties file.
 
 ```
-spring.datasource.url = jdbc:mysql://localhost:3306/udemo?useUnicode=true
+spring.datasource.url=jdbc:postgresql://localhost:5432/udemodb
 spring.datasource.username=udemo
-spring.datasource.password=udemo 
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.database=MYSQL
-spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
-spring.jpa.hibernate.ddl-auto=none
+spring.datasource.password=udemodb2$
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.database=POSTGRESQL
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=create-drop
 ```      
-
-If using container to run udemo, you can start a mysql container as stated below:
+If using container to run udemo, you can start a postgres container as stated below:
 
 ```
-docker run --name mysql-udemo -e MYSQL_ROOT_PASSWORD=udemo -e MYSQL_DATABASE=udemo -p 3306:3306 mysql:8.0.23
+docker run --name postgres-udemo -e POSTGRES_ROOT_PASSWORD=udemo -e POSTGRES_DATABASE=udemo -p 5432: postgress:9.5
+```
+## RabbitMQ
+
+Ensure to have a running instance of rabbitmq and configured. rabbitmq configuration can be located in application.properties 
+
+```
+mq.host=localhost
+mq.username=guest
+mq.password=guest
+mq.port=5672
+mq.vhost=/
 ```
 
-Ensure you have a local running instance of RabbitMQ
-
-for RabbitMQ, you can start a container as follows:
+RabbitMQ, you can start a container as follows:
 
 ```
 $ docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3.8.7
 ```
 
-### prerequisites
+### Prerequisites
 The following items should be installed in your system:
-* JDK 11
+* JDK >= 8
 * Maven 3 (http://www.sonatype.com/books/mvnref-book/reference/installation.html)
 * git command line tool (https://help.github.com/articles/set-up-git)
+
+### Tech Stack: 
+* Java 11 
+* SpringBoot 2.3 
+* Spring Data 
+* Spring MVC 
+* Swagger 2 
+* RabbitMQ 
+* JavaMail
+* PostgresSQL 
+* Tomcat 9
+* Promethius
+* Grafana
+* Docker
+* Stackify

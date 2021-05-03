@@ -1,9 +1,9 @@
 package com.arc.udemo.service.impl;
 
+import com.arc.udemo.domain.billing.Band;
 import com.arc.udemo.domain.billing.Bill;
 import com.arc.udemo.domain.billing.BillType;
 import com.arc.udemo.domain.billing.Fee;
-import com.arc.udemo.domain.billing.UsagePlan;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.repository.*;
 import com.arc.udemo.rest.dto.MonthlyBillRequest;
@@ -30,15 +30,15 @@ public class UDemoServiceImpl implements UDemoService {
     private UserRepository userRepository;
     private BillRepository billRepository;
     private FeeRepository feeRepository;
-    private UsagePlanRepository usagePlanRepository;
+    private BandRepository bandRepository;
     private APIUsageRepository apiUsageRepository;
 
     @Autowired
     public UDemoServiceImpl(UserRepository userRepository, FeeRepository feeRepository,
-                            UsagePlanRepository usagePlanRepository, BillRepository billRepository, APIUsageRepository apiUsageRepository){
+                            BandRepository bandRepository, BillRepository billRepository, APIUsageRepository apiUsageRepository){
         this.userRepository = userRepository;
         this.feeRepository = feeRepository;
-        this.usagePlanRepository = usagePlanRepository;
+        this.bandRepository = bandRepository;
         this.billRepository = billRepository;
         this.apiUsageRepository = apiUsageRepository;
     }
@@ -85,18 +85,18 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Override
     @Transactional
-    public UsagePlan saveUsagePlan(UsagePlanRequest usagePlanRequest) throws DataAccessException {
+    public Band saveUsagePlan(UsagePlanRequest usagePlanRequest) throws DataAccessException {
         Optional<Fee> fee = feeRepository.findById(Integer.parseInt(usagePlanRequest.getFee()));
-        UsagePlan usagePlan = new UsagePlan(usagePlanRequest.getName(), usagePlanRequest.getDescription(),
+        Band band = new Band(usagePlanRequest.getName(), usagePlanRequest.getDescription(),
                 Double.parseDouble(usagePlanRequest.getPrice()), fee.get());
-        return usagePlanRepository.save(usagePlan);
+        return bandRepository.save(band);
     }
 
     @Override
     public User subscribeUserToPlan(UsageSubscriptionRequest subscriptionRequestDTO) {
-        Optional<UsagePlan> usagePlan = usagePlanRepository.findById(Integer.parseInt(subscriptionRequestDTO.getPlan()));
+        Optional<Band> usagePlan = bandRepository.findById(Integer.parseInt(subscriptionRequestDTO.getPlan()));
         User user = userRepository.findUserByEmail(subscriptionRequestDTO.getEmail());
-        user.setUsagePlan(usagePlan.get());
+        user.setBand(usagePlan.get());
         return  userRepository.save(user);
     }
 
@@ -114,23 +114,23 @@ public class UDemoServiceImpl implements UDemoService {
         Long usage = apiUsageRepository.countAPICallEventByUserEmailAndRequestDateIsBetween(user.getEmail(), startDate, endDate);
 
         //Get User UsagePlan
-        UsagePlan usagePlan = new UsagePlan();
+        Band band = new Band();
         if(usage >= 0 && usage <= 1000000){
-            usagePlan = usagePlanRepository.findUsagePlanByName("Lowest");
+            band = bandRepository.findUsagePlanByName("Lowest");
         }
         else if(usage > 1000001 && usage <= 10000000){
-            usagePlan = usagePlanRepository.findUsagePlanByName("Medium");
+            band = bandRepository.findUsagePlanByName("Medium");
         }
         else if(usage > 10000001){
-            usagePlan = usagePlanRepository.findUsagePlanByName("Highest");
+            band = bandRepository.findUsagePlanByName("Highest");
         }
-        user.setUsagePlan(usagePlan);
+        user.setBand(band);
         monthlyBill.setName(BillType.Monthly.toString() + " Bill");
         monthlyBill.setDescription("API Service Monthly Bill");
         monthlyBill.setUser(user);
-        monthlyBill.setUsagePlan(usagePlan);
-        monthlyBill.setSubTotal(usagePlan.getPrice());
-        monthlyBill.setTax((1.5 / 100) * usagePlan.getPrice());
+        monthlyBill.setBand(band);
+        monthlyBill.setSubTotal(band.getPrice());
+        monthlyBill.setTax((1.5 / 100) * band.getPrice());
         monthlyBill.setTotal(monthlyBill.getSubTotal() + monthlyBill.getTax());
         userRepository.save(user);
         return billRepository.save(monthlyBill);

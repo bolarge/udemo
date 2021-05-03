@@ -2,7 +2,7 @@ package com.arc.udemo.service;
 
 import com.arc.udemo.domain.billing.Bill;
 import com.arc.udemo.domain.billing.Fee;
-import com.arc.udemo.domain.billing.UsagePlan;
+import com.arc.udemo.domain.billing.Band;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.rest.dto.MonthlyBillRequest;
 import com.arc.udemo.rest.dto.UsagePlanRequest;
@@ -23,7 +23,7 @@ public interface UDemoService {
     User findUserByEmail(String email) throws DataAccessException;
 
     Fee saveFee(Fee fee) throws DataAccessException;
-    UsagePlan saveUsagePlan(UsagePlanRequest usagePlanRequest) throws DataAccessException;
+    Band saveUsagePlan(UsagePlanRequest usagePlanRequest) throws DataAccessException;
     User subscribeUserToPlan(UsageSubscriptionRequest subscriptionRequestDTO);
     Bill generateUserMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException;
 }
