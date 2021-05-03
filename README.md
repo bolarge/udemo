@@ -1,6 +1,6 @@
 ## uDemo API Billing Service.
 
-#### This document describes uDemo API Billing service, which a demo of how API services used by customers can be tracked and logged for the purpose of monitizing such API services. The service tracks API usage by gennerating usgae events whenever API calls are made, this events are then propagated and handled by other componnents such as event listener to store the call event. The service use the captured information to prepare comsumption history and a bill. 
+#### This document describes uDemo API Billing service, which demos how API services used by customers can be tracked and logged for the purpose of monitizing them. The service tracks API usage by generating usage events whenever API calls are made, this events are then propagated and handled by other components such as event listener to store the generated api call event. The service uses the captured information to prepare consumption history used to generate the monthly bill. The monthly bill is finally delivered via email to user. 
 
 ### Installation
 
