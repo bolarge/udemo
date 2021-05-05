@@ -77,3 +77,6 @@ The following items should be installed in your system:
 You can run through the deployed application by using the swagger documentation at the link below
 * http://{domain-name:port}/swagger-ui.html#/
 
+## Test Script
+To exercise any of the functionality within uDemo, use the link below to get test script.
+* https://docs.google.com/spreadsheets/d/1kaok6VY5c8513i0PiFLPtJL3PqVQA-WaBWhmc6HmuR4/edit?usp=sharing
