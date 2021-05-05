@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 @Profile("spring-data-jpa")
 public interface RoleRepository extends CrudRepository<Role, Integer> {
+    Role findRoleByName(String name);
 }

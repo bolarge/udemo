@@ -1,15 +1,17 @@
-package com.arc.udemo.rest;
+package com.arc.udemo.v1.controller;
 
 import com.arc.udemo.domain.MailMessage;
 import com.arc.udemo.domain.products.APIUsage;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.domain.users.UserStatus;
 import com.arc.udemo.exception.ResourceNotFoundException;
+import com.arc.udemo.exception.error.ErrorDetail;
 import com.arc.udemo.rest.dto.UsageSubscriptionRequest;
 import com.arc.udemo.rest.dto.UserCreationRequest;
 import com.arc.udemo.service.EmailService;
 import com.arc.udemo.service.EventService;
 import com.arc.udemo.service.UDemoService;
+import com.arc.udemo.service.UserContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,22 +23,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.arc.udemo.exception.error.ErrorDetail;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;
 
-@RestController
+@RestController("userRestControllerV1")
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/api/")
+@RequestMapping("/v1/")
 @Api(value = "users", tags = "User API")
 public class UserRestController {
 
@@ -51,19 +50,22 @@ public class UserRestController {
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private UserContext userContext;
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ApiOperation(value = "Retrieves given user", response = User.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = User.class),
             @ApiResponse(code = 404, message = "Unable to find user", response = ErrorDetail.class)})
     public ResponseEntity<?> getUser(@PathVariable Integer userId, HttpServletRequest httpServletRequest) {
-        logger.info("capturing api call event ..................... ");
-        //generate an event
-        APIUsage apiUsage = new APIUsage("joe@mailinator.com.com","user.com", httpServletRequest.getRemoteHost(), "Ajao Estate Isolo", LocalDate.now());
+        APIUsage apiUsage = new APIUsage(userContext.getCurrentUser().getEmail(),httpServletRequest.getRemoteAddr(), httpServletRequest.getRemoteHost(), userContext.getCurrentUser().getMobilePhone(), LocalDate.now());
         eventService.processEvent(apiUsage);
         Optional<User> user =  this.uDemoService.findUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_VIEWER') or hasRole('ROLE_EDITOR')")
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = "application/json")
     @ApiOperation(value = "Retrieves all the users", response = User.class, responseContainer = "List")
     public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
@@ -71,6 +73,7 @@ public class UserRestController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/users", method = RequestMethod.POST, produces = "application/json")
     @ApiOperation(value = "Creates a new User Request", notes = "The newly created user Id will be sent in the location response header", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 201, message = "User Application Successful", response = Void.class), @ApiResponse(code = 500, message = "Error creating User", response = ErrorDetail.class)})
@@ -93,6 +96,7 @@ public class UserRestController {
         return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
     @ApiOperation(value = "Updates given user", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class),
@@ -103,6 +107,7 @@ public class UserRestController {
         return new ResponseEntity<>(updateUser, HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE, produces = "application/json")
     @ApiOperation(value = "Deletes given user", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class),
@@ -126,6 +131,7 @@ public class UserRestController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/*/email/{email}", method = RequestMethod.GET, produces = "application/json")
     @ApiOperation(value = "Verify user request", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = Void.class), @ApiResponse(code = 404, message = "Unable to verify user", response = ErrorDetail.class)})
@@ -155,6 +161,7 @@ public class UserRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/users/plans", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<?> subscribeUserToUsagePlan(@RequestBody UsageSubscriptionRequest subscriptionRequestDTO){
         User user = this.uDemoService.subscribeUserToPlan(subscriptionRequestDTO);

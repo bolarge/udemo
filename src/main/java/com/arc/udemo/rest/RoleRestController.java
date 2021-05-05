@@ -1,7 +1,8 @@
 package com.arc.udemo.rest;
 
-import com.arc.udemo.domain.billing.Fee;
+import com.arc.udemo.domain.users.Role;
 import com.arc.udemo.exception.error.ErrorDetail;
+import com.arc.udemo.rest.dto.RoleCreationRequest;
 import com.arc.udemo.service.UDemoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,20 +22,20 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/")
-@Api(value = "fees", tags = "Fee API")
-public class FeeRestController {
+@Api(value = "roles", tags = "Role API")
+public class RoleRestController {
 
     @Autowired
     private UDemoService uDemoService;
 
-    @RequestMapping(value = "/fees", method = RequestMethod.POST, produces = "application/json")
-    @ApiOperation(value = "Creates a new Fee request", notes = "The newly created fee Id will be sent in the location response header", response = Void.class)
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "Fee creation request successful", response = Void.class), @ApiResponse(code = 500, message = "Error creating fee", response = ErrorDetail.class)})
-    public ResponseEntity<?> createFee(@RequestBody Fee fee){
-        Fee newFee = this.uDemoService.saveFee(fee);
+    @RequestMapping(value = "/roles", method = RequestMethod.POST, produces = "application/json")
+    @ApiOperation(value = "Creates a new Role request", notes = "The newly created role Id will be sent in the location response header", response = Void.class)
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Role creation request successful", response = Void.class), @ApiResponse(code = 500, message = "Error creating fee", response = ErrorDetail.class)})
+    public ResponseEntity<Role> createRole(@RequestBody RoleCreationRequest roleCreationRequest){
+        Role role = this.uDemoService.createRole(roleCreationRequest);
         HttpHeaders responseHeaders = new HttpHeaders();
-        URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newFee.getId()).toUri();
+        URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(role.getId()).toUri();
         responseHeaders.setLocation(newPollUri);
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+        return new ResponseEntity<Role>(role, responseHeaders, HttpStatus.CREATED);
     }
 }

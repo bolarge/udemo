@@ -4,15 +4,16 @@ import com.arc.udemo.domain.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
-@Table(name = "roles" ,uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"}))
+@Table(name = "roles")
 public class Role extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private User user;
+    @ManyToMany(mappedBy = "roles")
+    private Collection<User> users = new HashSet<>();
 
     @Column( name = "role")
     private String name;
@@ -23,12 +24,12 @@ public class Role extends BaseEntity {
         name = role;
     }
 
-    public User getUser() {
-        return user;
+    public Collection<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(Collection<User> users) {
+        this.users = users;
     }
 
     public String getName() {
@@ -37,5 +38,14 @@ public class Role extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "users=" + users +
+                ", name='" + name + '\'' +
+                ", id=" + id +
+                '}';
     }
 }

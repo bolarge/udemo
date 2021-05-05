@@ -5,7 +5,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class uDemoClient {
 
-	private static final String UDemo_URI_V1 = "http://localhost:8085/api/users";
+	private static final String UDemo_URI_V1 = "http://localhost:8085/v1/users";
 
 	private RestTemplate restTemplate = new RestTemplate();
 
@@ -18,7 +18,7 @@ public class uDemoClient {
 		uDemoClient client = new uDemoClient();
 
 		// Test Get User API
-		User user = client.getUserById(1);
+		User user = client.getUserById(8);
 		System.out.println(user);
 	}
 

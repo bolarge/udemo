@@ -4,43 +4,56 @@ import com.arc.udemo.domain.billing.Band;
 import com.arc.udemo.domain.billing.Bill;
 import com.arc.udemo.domain.billing.BillType;
 import com.arc.udemo.domain.billing.Fee;
+import com.arc.udemo.domain.users.Role;
+import com.arc.udemo.domain.users.Title;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.repository.*;
-import com.arc.udemo.rest.dto.MonthlyBillRequest;
-import com.arc.udemo.rest.dto.UsagePlanRequest;
-import com.arc.udemo.rest.dto.UsageSubscriptionRequest;
+import com.arc.udemo.rest.dto.*;
 import com.arc.udemo.service.UDemoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectRetrievalFailureException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UDemoServiceImpl implements UDemoService {
+    private static Logger logger = LoggerFactory.getLogger(UDemoServiceImpl.class);
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private HttpServletRequest request;
 
     private UserRepository userRepository;
     private BillRepository billRepository;
     private FeeRepository feeRepository;
     private BandRepository bandRepository;
     private APIUsageRepository apiUsageRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
     public UDemoServiceImpl(UserRepository userRepository, FeeRepository feeRepository,
-                            BandRepository bandRepository, BillRepository billRepository, APIUsageRepository apiUsageRepository){
+                            BandRepository bandRepository, BillRepository billRepository, APIUsageRepository apiUsageRepository,
+                            RoleRepository roleRepository){
         this.userRepository = userRepository;
         this.feeRepository = feeRepository;
         this.bandRepository = bandRepository;
         this.billRepository = billRepository;
         this.apiUsageRepository = apiUsageRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -67,8 +80,19 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Override
     @Transactional
-    public User saveUser(User person) throws DataAccessException {
-        return userRepository.save(person);
+    public User saveUser(UserCreationRequest userCreationRequest) throws DataAccessException {
+        User user = new User();
+        user.setFirstName(userCreationRequest.getFirstName());
+        user.setLastName(userCreationRequest.getLastName());
+        user.setTitle(Title.valueOf(userCreationRequest.getTitle()));
+        user.setMobilePhone(userCreationRequest.getMobileNumber());
+        user.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
+        user.setAdmin(userCreationRequest.isAdmin());
+        user.setEnabled(userCreationRequest.isEnabled());
+        user.setEmail(userCreationRequest.getEmail());
+        Role role1 = roleRepository.findRoleByName(userCreationRequest.getRole());
+        user.getRoles().add(role1);
+        return userRepository.save(user);
     }
 
     @Override
@@ -134,5 +158,24 @@ public class UDemoServiceImpl implements UDemoService {
         monthlyBill.setTotal(monthlyBill.getSubTotal() + monthlyBill.getTax());
         userRepository.save(user);
         return billRepository.save(monthlyBill);
+    }
+
+    private String getClientIP() {
+        final String xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader != null) {
+            return xfHeader.split(",")[0];
+        }
+        return request.getRemoteAddr();
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    @Override
+    @Transactional
+    public Role createRole(RoleCreationRequest roleCreationRequest) {
+        Role role = new Role(roleCreationRequest.getName());
+        return roleRepository.save(role);
     }
 }

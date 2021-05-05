@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -69,12 +70,19 @@ public class User extends BaseEntity implements Serializable {
 	@Column(name="verified")
 	private boolean verified = false;
 
+	@Column(name="admin")
+	private boolean admin = false;
+
 	@Column(name = "status")
 	@Enumerated(EnumType.STRING)
 	private UserStatus status = UserStatus.REGISTERED;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
-	private Set<Role> roles;
+	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Role.class)
+	@JoinTable(name="user_role",
+			joinColumns=@JoinColumn(name="user_id"),
+			inverseJoinColumns=@JoinColumn(name="role_id"))
+	protected Collection<Role> roles = new HashSet<>();
 
 	@OneToOne
 	private Band band;
@@ -113,11 +121,11 @@ public class User extends BaseEntity implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public Set<Role> getRoles() {
+	public Collection<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Collection<Role> roles) {
 		this.roles = roles;
 	}
 
@@ -179,6 +187,14 @@ public class User extends BaseEntity implements Serializable {
 
 	public boolean isVerified() {
 		return verified;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 
 	public void setVerified(boolean verified) {

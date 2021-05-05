@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@RestController
+@RestController("rootRestControllerV1")
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/")
+@RequestMapping("/api/")
 public class RootRestController {
 
 	@RequestMapping(value = "/")

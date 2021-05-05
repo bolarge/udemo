@@ -1,4 +1,4 @@
-package com.arc.udemo.rest;
+package com.arc.udemo.v1.controller;
 
 import com.arc.udemo.domain.billing.Bill;
 import com.arc.udemo.exception.error.ErrorDetail;
@@ -20,9 +20,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-@RestController
-@RequestMapping("/api/")
-@Api(value = "bills", tags = "Bill API")
+@RestController("billRestControllerV1")
+@RequestMapping("/v1/")
+@Api(value = "bill", tags = "Bill API")
 public class BillRestController {
 
     @Autowired

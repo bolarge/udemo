@@ -25,11 +25,25 @@ import java.util.Collections;
 @ComponentScan(basePackages="com.arc.udemo")
 public class SwaggerConfig {
 	@Bean
-	public Docket customDocket(){
+	public Docket sandBox(){
 		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("sandbox")
 				.select()
-				.apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.any())
+				//.apis(RequestHandlerSelectors.any())
+				.apis(RequestHandlerSelectors.basePackage("com.arc.udemo"))
+				//.paths(PathSelectors.any())
+				.paths(PathSelectors.ant("/api/**"))
+				.build()
+				.apiInfo(getApiInfo());
+	}
+
+	@Bean
+	public Docket uDemoV1(){
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("v1")
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.arc.udemo"))
+				.paths(PathSelectors.ant("/v1/**"))
 				.build()
 				.apiInfo(getApiInfo());
 	}
@@ -37,7 +51,7 @@ public class SwaggerConfig {
 	private ApiInfo getApiInfo() {
 		return new ApiInfo(
 				"uDemo API Documentation",
-				"This is REST API documentation of the uDemo backend. If authentication is enabled, when calling the APIs use admin/admin",
+				"This is REST API documentation of the uDemo service. If authentication is enabled, when calling the APIs use admin/admin",
 				"1.0",
 				"uDemo terms of service",
 				new Contact(

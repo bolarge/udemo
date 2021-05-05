@@ -1,4 +1,4 @@
-package com.arc.udemo.rest;
+package com.arc.udemo.v1.controller;
 
 import com.arc.udemo.domain.billing.Fee;
 import com.arc.udemo.exception.error.ErrorDetail;
@@ -19,8 +19,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-@RestController
-@RequestMapping("/api/")
+@RestController("feeRestControllerV1")
+@RequestMapping("/v1/")
 @Api(value = "fees", tags = "Fee API")
 public class FeeRestController {
 
