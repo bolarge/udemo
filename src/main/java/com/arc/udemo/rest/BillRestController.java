@@ -32,7 +32,7 @@ public class BillRestController {
     @RequestMapping(value = "/bills/single", method = RequestMethod.POST, produces = "application/json")
     @ApiOperation(value = "Creates a new  Customer Bill", notes = "The newly created customer bill Id will be sent in the location response header", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Bill creation successful", response = Void.class), @ApiResponse(code = 500, message = "Error creating bill", response = ErrorDetail.class)})
-    public ResponseEntity<?> generateCustomerMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest){
+    public ResponseEntity<?> generateCustomerMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest) throws Exception {
         Bill monthlyBill = this.uDemoService.generateUserMonthlyBill(monthlyBillRequest);
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(monthlyBill.getId()).toUri();
@@ -43,7 +43,7 @@ public class BillRestController {
     @RequestMapping(value = "/bills/batch", method = RequestMethod.POST, produces = "application/json")
     @ApiOperation(value = "Generates Customers monthly bill", notes = "Generates monthly bill for all customers ", responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Bills generation request successful", response = Bill.class), @ApiResponse(code = 500, message = "Error creating bill", response = ErrorDetail.class)})
-    public ResponseEntity<Collection<Bill>> generateCustomersMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest){
+    public ResponseEntity<Collection<Bill>> generateCustomersMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest) throws Exception {
         Collection<Bill> customersMonthlyBill = this.uDemoService.generateMonthlyBill(monthlyBillRequest);
         return new ResponseEntity<>(customersMonthlyBill, HttpStatus.OK);
     }

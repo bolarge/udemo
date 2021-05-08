@@ -31,7 +31,7 @@ public class BillRestController {
     @RequestMapping(value = "/bills", method = RequestMethod.POST, produces = "application/json")
     @ApiOperation(value = "Creates a new Bill request", notes = "The newly created bill Id will be sent in the location response header", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Bill creation request successful", response = Void.class), @ApiResponse(code = 500, message = "Error creating bill", response = ErrorDetail.class)})
-    public ResponseEntity<?> generateMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest){
+    public ResponseEntity<?> generateMonthlyBill(@RequestBody MonthlyBillRequest monthlyBillRequest) throws Exception {
         Bill monthlyBill = this.uDemoService.generateUserMonthlyBill(monthlyBillRequest);
         HttpHeaders responseHeaders = new HttpHeaders();
         URI newPollUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(monthlyBill.getId()).toUri();

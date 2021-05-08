@@ -1,9 +1,7 @@
 package com.arc.udemo.service.impl;
 
-import com.arc.udemo.domain.billing.Band;
-import com.arc.udemo.domain.billing.Bill;
-import com.arc.udemo.domain.billing.BillType;
-import com.arc.udemo.domain.billing.Fee;
+import com.arc.udemo.domain.MailMessage;
+import com.arc.udemo.domain.billing.*;
 import com.arc.udemo.domain.users.Role;
 import com.arc.udemo.domain.users.Title;
 import com.arc.udemo.domain.users.User;
@@ -131,7 +129,7 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Override
     @Transactional
-    public Bill generateUserMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException {
+    public Bill generateUserMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws Exception {
         Bill monthlyBill = new Bill();
         //Query Usage table for total counts of user APICall consumption within given month
 
@@ -161,13 +159,16 @@ public class UDemoServiceImpl implements UDemoService {
         monthlyBill.setSubTotal(band.getPrice());
         monthlyBill.setTax((1.5 / 100) * band.getPrice());
         monthlyBill.setTotal(monthlyBill.getSubTotal() + monthlyBill.getTax());
+        monthlyBill.setBillStatus(BillStatus.Generated);
+        monthlyBill.setDate_created(new Date());
+        sendBillToCustomers();
         userRepository.save(user); //Customer's current bill
         return billRepository.save(monthlyBill);
     }
 
     @Override
     @Transactional
-    public Collection<Bill> generateMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException {
+    public Collection<Bill> generateMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws Exception {
         //
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate startDate = LocalDate.parse(monthlyBillRequest.getStartDate());
@@ -206,12 +207,41 @@ public class UDemoServiceImpl implements UDemoService {
                 }
                 monthlyBill.setUser(customerMetered);
                 monthlyBill.setTotal(monthlyBill.getSubTotal() + monthlyBill.getTax());
+                monthlyBill.setBillStatus(BillStatus.Generated);
+                monthlyBill.setDate_created(new Date());
                 customersBills.add(monthlyBill);
                 billRepository.save(monthlyBill);
                 userRepository.save(customerMetered);
+                sendBillToCustomers();
             }
+
         }
         return  customersBills;
+    }
+
+    public void sendBillToCustomers() throws Exception {
+        //Get all bills to be sent
+        Collection<Bill> bills4Dispatch = billRepository.findAllByBillStatus(BillStatus.Generated);
+        System.out.println("Bill are: " + bills4Dispatch);
+        //Send bill to each customer
+        for(Bill currentBill: bills4Dispatch){
+            MailMessage billMessage = new MailMessage();
+            billMessage.setTo(currentBill.getUser().getEmail());
+            billMessage.setSubject("API Usage Monthly Bill");
+            billMessage.setText("<html><head></head><body><h3>Dear "+ currentBill.getUser().getFirstName() + ", </h3><br>" +
+                    "<p>Details of your API Usage service bill for last month are provided as follow: </p><br>" +
+                    "<p>Usage Plan " + currentBill.getBand().getName() +
+                    "<p>Plan Fee " + currentBill.getBand().getPrice() +
+                    "<p>Sub Total " + currentBill.getSubTotal() +
+                    "<p>Tax     " + currentBill.getTax() +
+                    "<p>Total Bill " + currentBill.getTotal() +
+                    "<br><br><p>Kindly ensure prompt payment to avoid service interruption "  +
+                    "<br><br><p>uDemo Team</p></body></html>");
+            emailService.sendEmail(billMessage);
+            currentBill.setDispatched(new Date());
+            currentBill.setBillStatus(BillStatus.Dispatched);
+            billRepository.save(currentBill);
+        }
     }
 
     private String getClientIP() {

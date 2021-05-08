@@ -33,6 +33,7 @@ public class User extends BaseEntity implements Serializable {
     @NotEmpty(message = "email must not be empty")
 	private String email;
 
+	@JsonIgnore
 	@Column(name = "password")
 	private String password;
 
@@ -67,9 +68,11 @@ public class User extends BaseEntity implements Serializable {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
 	private Date dateDeactivated;
 
+	@JsonIgnore
 	@Column(name="verified")
 	private boolean verified = false;
 
+	@JsonIgnore
 	@Column(name="admin")
 	private boolean admin = false;
 
@@ -84,6 +87,7 @@ public class User extends BaseEntity implements Serializable {
 			inverseJoinColumns=@JoinColumn(name="role_id"))
 	protected Collection<Role> roles = new HashSet<>();
 
+	@JsonIgnore
 	@OneToOne
 	private Band band;
 
