@@ -214,12 +214,11 @@ public class UDemoServiceImpl implements UDemoService {
                 userRepository.save(customerMetered);
                 sendBillToCustomers();
             }
-
         }
         return  customersBills;
     }
 
-    public void sendBillToCustomers() throws Exception {
+    private void sendBillToCustomers() throws Exception {
         //Get all bills to be sent
         Collection<Bill> bills4Dispatch = billRepository.findAllByBillStatus(BillStatus.Generated);
         System.out.println("Bill are: " + bills4Dispatch);

@@ -35,7 +35,7 @@ import java.util.Optional;
 
 @RestController("userRestControllerV1")
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/v1/")
+@RequestMapping({"/v1/", "/oauth2/v1"})
 @Api(value = "users", tags = "User API")
 public class UserRestController {
 
