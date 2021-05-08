@@ -9,6 +9,8 @@ import com.arc.udemo.domain.users.Title;
 import com.arc.udemo.domain.users.User;
 import com.arc.udemo.repository.*;
 import com.arc.udemo.rest.dto.*;
+import com.arc.udemo.service.EmailService;
+import com.arc.udemo.service.EventService;
 import com.arc.udemo.service.UDemoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +35,12 @@ public class UDemoServiceImpl implements UDemoService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private EventService eventService;
 
     private UserRepository userRepository;
     private BillRepository billRepository;
@@ -129,7 +134,7 @@ public class UDemoServiceImpl implements UDemoService {
     public Bill generateUserMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException {
         Bill monthlyBill = new Bill();
         //Query Usage table for total counts of user APICall consumption within given month
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         LocalDate startDate = LocalDate.parse(monthlyBillRequest.getStartDate());
         LocalDate endDate = LocalDate.parse(monthlyBillRequest.getEndDate());
         User user = userRepository.findUserByEmail(monthlyBillRequest.getEmail());
@@ -156,8 +161,57 @@ public class UDemoServiceImpl implements UDemoService {
         monthlyBill.setSubTotal(band.getPrice());
         monthlyBill.setTax((1.5 / 100) * band.getPrice());
         monthlyBill.setTotal(monthlyBill.getSubTotal() + monthlyBill.getTax());
-        userRepository.save(user);
+        userRepository.save(user); //Customer's current bill
         return billRepository.save(monthlyBill);
+    }
+
+    @Override
+    @Transactional
+    public Collection<Bill> generateMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException {
+        //
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate startDate = LocalDate.parse(monthlyBillRequest.getStartDate());
+        LocalDate endDate = LocalDate.parse(monthlyBillRequest.getEndDate());
+        Band lowestBand = bandRepository.findUsagePlanByName("Lowest");
+        Band mediumBand = bandRepository.findUsagePlanByName("Medium");
+        Band highestBand = bandRepository.findUsagePlanByName("Highest");
+        //
+        Collection<User> cusIter = (Collection<User>) userRepository.findAll();
+        System.out.println("Customers are: " + cusIter);
+        Collection<Bill> customersBills = new ArrayList<>();
+        for (User customerMetered: cusIter){
+            if(!customerMetered.isAdmin()){
+                Bill monthlyBill = new Bill();
+                long usage = apiUsageRepository.countAPICallEventByUserEmailAndRequestDateIsBetween(customerMetered.getEmail(), startDate, endDate);
+                monthlyBill.setName(BillType.Monthly.toString() + " Bill");
+                monthlyBill.setDescription("API Service Monthly Bill");
+
+                if(usage >= 0 && usage <= 1000000){
+                    customerMetered.setBand(lowestBand);
+                    monthlyBill.setBand(lowestBand);
+                    monthlyBill.setSubTotal(lowestBand.getPrice());
+                    monthlyBill.setTax((1.5 / 100) * lowestBand.getPrice());
+                }
+                else if(usage > 1000001 && usage <= 10000000){
+                    customerMetered.setBand(mediumBand);
+                    monthlyBill.setBand(mediumBand);
+                    monthlyBill.setSubTotal(mediumBand.getPrice());
+                    monthlyBill.setTax((1.5 / 100) * mediumBand.getPrice());
+                }
+                else if(usage > 10000001){
+                    customerMetered.setBand(highestBand);
+                    monthlyBill.setBand(highestBand);
+                    monthlyBill.setSubTotal(highestBand.getPrice());
+                    monthlyBill.setTax((1.5 / 100) * highestBand.getPrice());
+                }
+                monthlyBill.setUser(customerMetered);
+                monthlyBill.setTotal(monthlyBill.getSubTotal() + monthlyBill.getTax());
+                customersBills.add(monthlyBill);
+                billRepository.save(monthlyBill);
+                userRepository.save(customerMetered);
+            }
+        }
+        return  customersBills;
     }
 
     private String getClientIP() {

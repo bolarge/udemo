@@ -31,6 +31,7 @@ public interface UDemoService {
     Band saveUsagePlan(UsagePlanRequest usagePlanRequest) throws DataAccessException;
     //
     Bill generateUserMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException;
-
+    //Collection<Bill> findAllBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException
+    Collection<Bill> generateMonthlyBill(MonthlyBillRequest monthlyBillRequest) throws DataAccessException;
 
 }

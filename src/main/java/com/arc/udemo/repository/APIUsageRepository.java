@@ -10,4 +10,5 @@ import java.time.LocalDate;
 public interface APIUsageRepository extends JpaRepository<APIUsage, Integer> {
 
     Long countAPICallEventByUserEmailAndRequestDateIsBetween(String email, LocalDate startDate, LocalDate endDate);
+    //Long countAPICallEventByUserEmailAndRequestDateIsBetween(String email, LocalDate startDate, LocalDate endDate);
 }
